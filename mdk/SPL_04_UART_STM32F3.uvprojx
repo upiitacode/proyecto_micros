@@ -365,7 +365,7 @@
               <MiscControls></MiscControls>
               <Define>USE_STDPERIPH_DRIVER STM32F302x8</Define>
               <Undefine></Undefine>
-              <IncludePath>..\include;..\STM32F30x_StdPeriph_Driver\inc</IncludePath>
+              <IncludePath>..\include;..\STM32F30x_StdPeriph_Driver\inc;..\retarget\mdk\include</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -417,6 +417,16 @@
               <FileName>SPL_STM32F302x8.lib</FileName>
               <FileType>4</FileType>
               <FilePath>..\STM32F30x_StdPeriph_Driver\SPL_STM32F302x8.lib</FilePath>
+            </File>
+            <File>
+              <FileName>retarget.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\retarget\mdk\source\retarget.c</FilePath>
+            </File>
+            <File>
+              <FileName>retarget_stm32f3.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\retarget\mdk\source\retarget_stm32f3.c</FilePath>
             </File>
           </Files>
         </Group>
