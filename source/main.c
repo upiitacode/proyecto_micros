@@ -3,10 +3,21 @@
 #include "retarget_stm32f3.h"
 #include <stdio.h>
 void delay_ms(int delay_time);
-
+void led_init(void);
 
 int main(){
+	char buffer[80];
 	UART2_init();
+	led_init();
+	printf("\nsystem ready\n");
+	while(1){
+		printf("$ ");
+		gets(buffer);
+		printf("%s\n",buffer);
+	}
+}
+
+void led_init(void){
 	RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOB,ENABLE);
 	GPIO_InitTypeDef myGPIO;
 	GPIO_StructInit(&myGPIO);
@@ -16,13 +27,7 @@ int main(){
 	myGPIO.GPIO_PuPd=GPIO_PuPd_NOPULL;
 	myGPIO.GPIO_Speed=GPIO_Speed_10MHz;
 	GPIO_Init(GPIOB,&myGPIO);
-	while(1){
-		GPIO_WriteBit(GPIOB,GPIO_Pin_13,Bit_SET);
-		delay_ms(0xFFFFF);
-		GPIO_WriteBit(GPIOB,GPIO_Pin_13,Bit_RESET);
-		delay_ms(0xFFFFF);
-		printf("Hello world\n");
-	}
+	GPIO_WriteBit(GPIOB,GPIO_Pin_13,Bit_RESET);
 }
 
 void delay_ms(int delay_time){

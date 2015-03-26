@@ -37,6 +37,7 @@ void UART2_init(void){
 
 
 int __getkey(void){
+	while(!USART_GetFlagStatus(USART2,USART_FLAG_RXNE));
 	return USART_ReceiveData(USART2);
 }
 
