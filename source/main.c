@@ -7,6 +7,7 @@
 void delay_ms(int delay_time);
 void led_init(void);
 
+Serial_t USART1_Serial={USART1_getChar,USART1_sendChar};
 Serial_t USART2_Serial={USART2_getChar,USART2_sendChar};
 
 char mybf[80];/*Input buffer*/
