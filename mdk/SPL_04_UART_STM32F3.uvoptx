@@ -200,8 +200,8 @@
       <Focus>0</Focus>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\retarget\mdk\source\retarget.c</PathWithFileName>
-      <FilenameWithoutPath>retarget.c</FilenameWithoutPath>
+      <PathWithFileName>..\retarget\source\retarget_stm32f3.c</PathWithFileName>
+      <FilenameWithoutPath>retarget_stm32f3.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -213,8 +213,8 @@
       <Focus>0</Focus>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\retarget\mdk\source\retarget_stm32f3.c</PathWithFileName>
-      <FilenameWithoutPath>retarget_stm32f3.c</FilenameWithoutPath>
+      <PathWithFileName>..\retarget\source\serial_stdio.c</PathWithFileName>
+      <FilenameWithoutPath>serial_stdio.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>

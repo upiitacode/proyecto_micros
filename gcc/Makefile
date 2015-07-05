@@ -1,5 +1,5 @@
-INCLUDE_DIRS:= device/include cmsis/include ../include ../STM32F30x_StdPeriph_Driver/inc ../retarget/gcc/include
-SOURCE_DIRS:=  device/source ../source ../STM32F30x_StdPeriph_Driver/src ../retarget/gcc/source
+INCLUDE_DIRS:= device/include cmsis/include ../include ../STM32F30x_StdPeriph_Driver/inc ../retarget/include
+SOURCE_DIRS:=  device/source ../source ../STM32F30x_StdPeriph_Driver/src ../retarget/source
 
 #All the dtandard peripherial library files
 SPL_FILES:= $(notdir $(wildcard ../STM32F30x_StdPeriph_Driver/src/*.c ))
