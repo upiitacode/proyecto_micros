@@ -1,34 +1,29 @@
 #include "stm32f30x.h"                  // Device header
 #include "serial_stdio.h"
 #include "retarget_stm32f3.h"
+#include "adc_stm32f3.h"
 #include <string.h>
 /*Led PB13, Button PC13*/
 
 void delay_ms(int delay_time);
 void led_init(void);
 
-Serial_t USART1_Serial={USART1_getChar,USART1_sendChar};
 Serial_t USART2_Serial={USART2_getChar,USART2_sendChar};
 
 char mybf[80];/*Input buffer*/
 char wordBuffer[80];
+uint16_t adc_data;
 
 int main(){
-	int lineCounter=1;
 	led_init();
 	USART2_init(9600);
 	serial_puts(USART2_Serial,"\nSystem ready\n");
+    adc_init_injected();
 	while(1){
-		serial_printf(USART2_Serial,"%d$ ",lineCounter);
-		serial_gets(USART2_Serial,mybf,80);
-		serial_printf(USART2_Serial,"%s\n",mybf);
-		if(sscanf(mybf,"%s",wordBuffer) > 0){
-			serial_printf(USART2_Serial,"word: %s\n",wordBuffer);
-			serial_printf(USART2_Serial,"characters: %d\n",strlen(wordBuffer));
-		}
-		lineCounter++;
+        adc_data = adc_read_data(0);
+		serial_printf(USART2_Serial,"adc = %d\n", adc_data);
+        delay_ms(1000);
 	}
-	return 0;
 }
 
 
