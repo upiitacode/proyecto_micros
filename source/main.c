@@ -28,17 +28,21 @@ int main(){
 	serial_puts(USART2_Serial,"\nSystem ready\n");
     adc_init_injected();
     cny_init();
-    adc_data = adc_read_data(0);
-    serial_printf(USART2_Serial,"adc = %d\n", adc_data);
-    delay_ms(1000);
     
+    mark_ready = 0;
 	while(1){
-        mark_ready = 0;
-        while(!mark_ready);
-        serial_printf(USART2_Serial,"New time ready!\n"); 
-        for(int i  = 0;  i < 4; i++){
-            serial_printf(USART2_Serial,"mark[%d] = %u\n",i,mark_time[i]); 
+        adc_data = adc_read_data(0);
+        serial_printf(USART2_Serial,"angulo = %f\n",((adc_data)*(297.0/4095.0)));        
+        if(mark_ready){
+            serial_printf(USART2_Serial,"Nueva vola!\n"); 
+            for(int i  = 0;  i < 4; i++){
+                serial_printf(USART2_Serial,"tiempo punto %d = %f[ms]\n",i+1,(mark_time[i]/(1000.0))); 
+            }
+            serial_printf(USART2_Serial,"tiempo total = %f[ms]\n",(mark_time[3]/(1000.0)));
+            serial_printf(USART2_Serial,"velocidad total = %f[m/s]\n",((1.12)/(mark_time[3]/(1000000.0))));
+            mark_ready = 0;
         }
+        delay_ms(500);
 	}
 }
 
@@ -55,10 +59,22 @@ void cny_init(void){
     EXTI_InitTypeDef myEXTI;
     EXTI_StructInit(&myEXTI);
     
-    myEXTI.EXTI_Line = EXTI_Line11 | EXTI_Line12 | EXTI_Line13 | EXTI_Line14 | EXTI_Line15;
     myEXTI.EXTI_LineCmd = ENABLE;
     myEXTI.EXTI_Mode = EXTI_Mode_Interrupt;
-    myEXTI.EXTI_Trigger = EXTI_Trigger_Rising;
+    myEXTI.EXTI_Trigger = EXTI_Trigger_Falling;
+    myEXTI.EXTI_Line = EXTI_Line11;
+    EXTI_Init(&myEXTI);
+    
+    myEXTI.EXTI_Line = EXTI_Line12;
+    EXTI_Init(&myEXTI);
+    
+    myEXTI.EXTI_Line = EXTI_Line13;
+    EXTI_Init(&myEXTI);
+    
+    myEXTI.EXTI_Line = EXTI_Line14;
+    EXTI_Init(&myEXTI);
+    
+    myEXTI.EXTI_Line = EXTI_Line15;
     EXTI_Init(&myEXTI);
     
     RCC_APB2PeriphClockCmd(RCC_APB2ENR_SYSCFGEN,ENABLE);
@@ -75,33 +91,36 @@ void cny_init(void){
     EXTI_ClearITPendingBit(EXTI_Line15);
     
     NVIC_EnableIRQ(EXTI15_10_IRQn);
-    timer2_init(4000000,1);
+    timer2_init(80000000,1);
 }
 
+int mark_count = 0;
 void EXTI15_10_IRQHandler(){
     if(EXTI_GetITStatus(EXTI_Line11) == SET){
         timer2_start();
-        EXTI_ClearITPendingBit(EXTI_Line11);
-    }else{
-        if(EXTI_GetITStatus(EXTI_Line12) == SET){
-            mark_time[0] = timer2_get_time();
-            EXTI_ClearITPendingBit(EXTI_Line11);
-        }
-        if(EXTI_GetITStatus(EXTI_Line13) == SET){
-            mark_time[1] = timer2_get_time();
-            EXTI_ClearITPendingBit(EXTI_Line11);
-        }
-        if(EXTI_GetITStatus(EXTI_Line14) == SET){
-            mark_time[2] = timer2_get_time();
-            EXTI_ClearITPendingBit(EXTI_Line11);
-        }
-        if(EXTI_GetITStatus(EXTI_Line15) == SET){
-            mark_time[3] = timer2_get_time();
-            EXTI_ClearITPendingBit(EXTI_Line11);
-            timer2_stop();
-            mark_ready = 1;
-        }
+        mark_count = 1;
+    }else if((EXTI_GetITStatus(EXTI_Line12) == SET) && (mark_count == 1)){
+        mark_time[0] = timer2_get_time();
+        mark_count = 2;
+    }else if((EXTI_GetITStatus(EXTI_Line13) == SET) && (mark_count == 2)){
+        mark_time[1] = timer2_get_time();
+        mark_count = 3;
+    }else if((EXTI_GetITStatus(EXTI_Line14) == SET) && (mark_count == 3)){
+        mark_time[2] = timer2_get_time();
+        mark_count = 4;
+    }else if((EXTI_GetITStatus(EXTI_Line15) == SET) && (mark_count == 4)){
+        mark_time[3] = timer2_get_time();
+        mark_count = 0;
+        timer2_stop();
+        timer2_stop();
+        mark_ready = 1;
     }
+    
+    EXTI_ClearITPendingBit(EXTI_Line11);
+    EXTI_ClearITPendingBit(EXTI_Line12);
+    EXTI_ClearITPendingBit(EXTI_Line13);
+    EXTI_ClearITPendingBit(EXTI_Line14);
+    EXTI_ClearITPendingBit(EXTI_Line15);
 }
 
 int timer2_counter = 0;
