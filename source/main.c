@@ -25,7 +25,7 @@ int main(){
     SystemCoreClockUpdate();
 	led_init();
 	USART2_init(9600);
-	serial_puts(USART2_Serial,"\nSystem ready\n");
+	serial_puts(USART2_Serial,"\nExamen de dispositivos programables\n");
     adc_init_injected();
     cny_init();
     
@@ -52,7 +52,7 @@ void cny_init(void){
 	GPIO_StructInit(&myGPIO);
 	myGPIO.GPIO_Pin=GPIO_Pin_11 | GPIO_Pin_12 | GPIO_Pin_13 | GPIO_Pin_14 | GPIO_Pin_15;
 	myGPIO.GPIO_Mode=GPIO_Mode_IN;
-	myGPIO.GPIO_PuPd=GPIO_PuPd_UP;
+	myGPIO.GPIO_PuPd=GPIO_PuPd_DOWN;
 	myGPIO.GPIO_Speed=GPIO_Speed_10MHz;
 	GPIO_Init(GPIOC,&myGPIO);
     
@@ -61,7 +61,7 @@ void cny_init(void){
     
     myEXTI.EXTI_LineCmd = ENABLE;
     myEXTI.EXTI_Mode = EXTI_Mode_Interrupt;
-    myEXTI.EXTI_Trigger = EXTI_Trigger_Falling;
+    myEXTI.EXTI_Trigger = EXTI_Trigger_Rising;
     myEXTI.EXTI_Line = EXTI_Line11;
     EXTI_Init(&myEXTI);
     
