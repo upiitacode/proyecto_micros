@@ -10,20 +10,28 @@ void timer2_init(int period,int use_us){
 	RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2,ENABLE);
 	TIM_TimeBaseInitTypeDef myTimer;
 	TIM_TimeBaseStructInit(&myTimer);
-	myTimer.TIM_CounterMode=TIM_CounterMode_Down;
+	myTimer.TIM_CounterMode=TIM_CounterMode_Up;
 	myTimer.TIM_Prescaler=prescaler;
 	myTimer.TIM_ClockDivision=TIM_CKD_DIV1;
 	myTimer.TIM_Period=period;
 	TIM_TimeBaseInit(TIM2,&myTimer);
-
+    
 	TIM_InternalClockConfig(TIM2);
-
+    
+    TIM_SelectOnePulseMode(TIM2,TIM_OPMode_Single);
+    
 	TIM_ITConfig(TIM2,TIM_IT_Update,ENABLE);
 	NVIC_EnableIRQ(TIM2_IRQn);
 }
 
 void timer2_start(void){
+    TIM_Cmd(TIM2,DISABLE);
+    TIM_SetCounter(TIM2,0);
 	TIM_Cmd(TIM2,ENABLE);
+}
+
+uint32_t timer2_get_time(void){
+    TIM_GetCounter(TIM2);
 }
 
 void timer2_stop(void){
